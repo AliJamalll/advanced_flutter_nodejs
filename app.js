@@ -3,10 +3,10 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 dotenv.config({ path: "./.env" });
 const app = express();
-
 const port = process.env.PORT;
 
 // app.use((req, res, next) => {
@@ -32,6 +32,19 @@ app.options(/.*/, cors());
 app.get("/", (req, res) => {
   return res.status(200).send("<h1>hi ali server</h1>");
 });
+
+const DB = process.env.DATABASE.replace(
+  "<PASSWORD>",
+  process.env.DATABASE_PASSWORD
+);
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log("connected to DB");
+  })
+  .catch((err) => {
+    console.log(`DB connection err ${err}`);
+  });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
